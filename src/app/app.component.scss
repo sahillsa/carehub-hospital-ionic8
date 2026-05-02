@@ -1,0 +1,603 @@
+:host {
+  display: block;
+}
+
+ion-toolbar {
+  --background: #ffffff;
+  --color: var(--page-ink);
+  --border-color: var(--line);
+}
+
+ion-title {
+  font-weight: 700;
+}
+
+ion-menu ion-content {
+  --background: #ffffff;
+}
+
+ion-menu ion-item {
+  --border-radius: 8px;
+  --padding-start: 12px;
+  --inner-padding-end: 12px;
+  margin: 4px 10px;
+  font-weight: 650;
+}
+
+ion-menu ion-item.active {
+  --background: var(--soft-blue);
+  --color: var(--ion-color-primary);
+}
+
+.role-toolbar {
+  --min-height: 58px;
+}
+
+ion-segment {
+  padding: 6px 10px 10px;
+}
+
+ion-segment-button {
+  --border-radius: 8px;
+  --indicator-color: var(--ion-color-primary);
+  min-width: 126px;
+  text-transform: none;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 18px 12px;
+}
+
+.brand-lockup strong,
+.brand-lockup span {
+  display: block;
+}
+
+.brand-lockup span {
+  margin-top: 2px;
+  color: var(--muted-ink);
+  font-size: 0.86rem;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  color: #ffffff;
+  background: #0f6b7f;
+}
+
+.brand-mark ion-icon {
+  font-size: 1.5rem;
+}
+
+.app-shell {
+  width: min(1280px, 100%);
+  margin: 0 auto;
+  padding: 18px;
+}
+
+.shift-strip,
+.toolbar-strip,
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 10px 24px rgba(35, 47, 62, 0.06);
+}
+
+.shift-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  padding: 18px;
+}
+
+.eyebrow,
+.panel-kicker,
+.item-kicker {
+  color: var(--ion-color-primary);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.shift-strip h1 {
+  margin: 3px 0 6px;
+  font-size: 1.72rem;
+  line-height: 1.16;
+}
+
+.shift-strip p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted-ink);
+  line-height: 1.45;
+}
+
+.shift-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(108px, 1fr));
+  gap: 10px;
+}
+
+.shift-meta div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fafcff;
+}
+
+.shift-meta span,
+.shift-meta strong {
+  display: block;
+}
+
+.shift-meta span {
+  margin-bottom: 4px;
+  color: var(--muted-ink);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.shift-meta strong {
+  overflow-wrap: anywhere;
+  font-size: 0.94rem;
+}
+
+.toolbar-strip {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin-top: 14px;
+  padding: 8px;
+}
+
+.toolbar-strip ion-searchbar {
+  --box-shadow: none;
+  --border-radius: 8px;
+  --background: #eef3f7;
+  padding: 0;
+}
+
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.quick-actions ion-button {
+  min-height: 36px;
+  text-transform: none;
+  font-weight: 800;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(300px, 0.95fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.metric-card,
+.patient-card,
+.task-card,
+.schedule-card,
+.permission-row,
+.resource-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.metric-card {
+  min-height: 136px;
+  padding: 15px;
+}
+
+.metric-card header,
+.panel-header,
+.patient-card header,
+.task-card header,
+.schedule-card header,
+.resource-card header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.metric-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  color: var(--ion-color-primary);
+  background: var(--soft-blue);
+}
+
+.metric-card h3,
+.patient-card h3,
+.task-card h3,
+.schedule-card h3,
+.resource-card h3,
+.access-title {
+  margin: 0;
+  color: var(--muted-ink);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.metric-value {
+  margin: 16px 0 5px;
+  font-size: 1.7rem;
+  font-weight: 800;
+}
+
+.metric-card p,
+.patient-card p,
+.task-card p,
+.schedule-card p,
+.resource-card p,
+.permission-row p {
+  margin: 0;
+  color: var(--muted-ink);
+  line-height: 1.42;
+}
+
+.trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.trend.up {
+  color: #11603f;
+  background: var(--soft-green);
+}
+
+.trend.down {
+  color: #8a3e00;
+  background: var(--soft-amber);
+}
+
+.trend.alert {
+  color: #a33232;
+  background: var(--soft-red);
+}
+
+.panel {
+  margin-top: 16px;
+  padding: 16px;
+}
+
+.dashboard-grid .panel {
+  margin-top: 0;
+}
+
+.panel + .panel,
+.stack > * + * {
+  margin-top: 14px;
+}
+
+.panel-header {
+  margin-bottom: 12px;
+}
+
+.panel-header h2 {
+  margin: 2px 0 0;
+  font-size: 1.06rem;
+}
+
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.panel-actions ion-button {
+  text-transform: none;
+  font-weight: 750;
+}
+
+.queue-list,
+.task-list,
+.schedule-list,
+.resource-grid,
+.permission-list,
+.handover-list {
+  display: grid;
+  gap: 10px;
+}
+
+.patient-card,
+.task-card,
+.schedule-card,
+.resource-card {
+  padding: 13px;
+}
+
+.patient-meta,
+.task-meta,
+.schedule-meta,
+.resource-meta,
+.access-cells,
+.handover-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  max-width: 100%;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #405060;
+  background: #eef3f7;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.pill.critical {
+  color: #981f1f;
+  background: var(--soft-red);
+}
+
+.pill.warning {
+  color: #855000;
+  background: var(--soft-amber);
+}
+
+.pill.good {
+  color: #11603f;
+  background: var(--soft-green);
+}
+
+.pill.info {
+  color: #0f5d73;
+  background: var(--soft-blue);
+}
+
+.pill.violet {
+  color: #514099;
+  background: var(--soft-violet);
+}
+
+.task-card.done {
+  background: #f7fbf8;
+}
+
+.task-card.done h3,
+.task-card.done p {
+  color: #668170;
+}
+
+.task-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.task-check ion-checkbox {
+  margin-top: 2px;
+}
+
+.priority-rail {
+  width: 6px;
+  min-height: 44px;
+  border-radius: 999px;
+  background: var(--soft-blue);
+}
+
+.priority-rail.critical {
+  background: #dc3d3d;
+}
+
+.priority-rail.warning {
+  background: #d58210;
+}
+
+.priority-rail.good {
+  background: #21a56c;
+}
+
+.schedule-card {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.time-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: #0f5d73;
+  background: var(--soft-blue);
+  font-weight: 850;
+}
+
+.resource-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.resource-card strong {
+  display: block;
+  margin-top: 12px;
+  font-size: 1.35rem;
+}
+
+.bar-track {
+  width: 100%;
+  height: 8px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #edf2f5;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #0f6b7f;
+}
+
+.bar-fill.warning {
+  background: #d58210;
+}
+
+.bar-fill.critical {
+  background: #dc3d3d;
+}
+
+.permission-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.8fr) minmax(0, 1.6fr);
+  gap: 14px;
+  align-items: center;
+  padding: 12px;
+}
+
+.access-title {
+  color: var(--page-ink);
+}
+
+.empty-state {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  border: 1px dashed #c8d4df;
+  border-radius: 8px;
+  color: var(--muted-ink);
+  text-align: center;
+  background: #ffffff;
+}
+
+.empty-state ion-icon {
+  margin-bottom: 8px;
+  color: var(--ion-color-primary);
+  font-size: 2rem;
+}
+
+.modal-body {
+  padding: 18px;
+}
+
+.modal-form {
+  display: grid;
+  gap: 12px;
+}
+
+.modal-form ion-item {
+  --border-radius: 8px;
+  --background: #f7fafc;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.notice-line {
+  margin: 0 0 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbfd;
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-card h3,
+.profile-card p {
+  margin: 0;
+}
+
+.profile-card p {
+  margin-top: 4px;
+  color: var(--muted-ink);
+}
+
+@media (max-width: 1060px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-grid,
+  .resource-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 740px) {
+  .app-shell {
+    padding: 12px;
+  }
+
+  .shift-strip,
+  .toolbar-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .shift-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-actions {
+    justify-content: flex-start;
+  }
+
+  .metric-grid,
+  .resource-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-card,
+  .permission-row {
+    grid-template-columns: 1fr;
+  }
+
+  ion-segment-button {
+    min-width: 112px;
+  }
+}
