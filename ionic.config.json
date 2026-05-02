@@ -1,0 +1,7 @@
+{
+  "name": "CareHub Hospital",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
