@@ -6,7 +6,6 @@
           <ion-title>CareHub</ion-title>
         </ion-toolbar>
       </ion-header>
-
       <ion-content>
         <div class="brand-lockup">
           <div class="brand-mark">
@@ -17,18 +16,9 @@
             <span>Clinical operations</span>
           </div>
         </div>
-
         <ion-list lines="none">
-          <ion-menu-toggle
-            *ngFor="let item of menuItems; trackBy: trackByView"
-            [autoHide]="false"
-          >
-            <ion-item
-              [button]="true"
-              [detail]="false"
-              [class.active]="viewKey === item.id"
-              (click)="setView(item.id)"
-            >
+          <ion-menu-toggle *ngFor="let item of menuItems; trackBy: trackByView" [autoHide]="false">
+            <ion-item [button]="true" [detail]="false" [class.active]="viewKey === item.id" (click)="setView(item.id)">
               <ion-icon slot="start" [name]="item.icon"></ion-icon>
               <ion-label>{{ item.label }}</ion-label>
             </ion-item>
@@ -37,7 +27,7 @@
       </ion-content>
     </ion-menu>
 
-    <ion-page id="main-content">
+    <div class="ion-page" id="main-content">
       <ion-header translucent="true">
         <ion-toolbar>
           <ion-buttons slot="start">
@@ -53,17 +43,9 @@
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
-
         <ion-toolbar class="role-toolbar">
-          <ion-segment
-            [scrollable]="true"
-            [value]="roleKey"
-            (ionChange)="setRole($any($event).detail.value)"
-          >
-            <ion-segment-button
-              *ngFor="let key of roleKeys; trackBy: trackByRole"
-              [value]="key"
-            >
+          <ion-segment [scrollable]="true" [value]="roleKey" (ionChange)="setRole($any($event).detail.value)">
+            <ion-segment-button *ngFor="let key of roleKeys; trackBy: trackByRole" [value]="key">
               <ion-icon [name]="roles[key].icon"></ion-icon>
               <ion-label>{{ roles[key].label }}</ion-label>
             </ion-segment-button>
@@ -79,7 +61,6 @@
               <h1>{{ activeRole.label }}</h1>
               <p>{{ activeRole.summary }}</p>
             </div>
-
             <div class="shift-meta">
               <div>
                 <span>Shift</span>
@@ -97,12 +78,7 @@
           </section>
 
           <section class="toolbar-strip" aria-label="Workspace tools">
-            <ion-searchbar
-              [debounce]="120"
-              [value]="query"
-              placeholder="Search patient, task, ward"
-              (ionInput)="setQuery($any($event).detail.value)"
-            ></ion-searchbar>
+            <ion-searchbar [debounce]="120" [value]="query" placeholder="Search patient, task, ward" (ionInput)="setQuery($any($event).detail.value)"></ion-searchbar>
             <div class="quick-actions">
               <ion-button size="small" (click)="openModal('newPatient')">
                 <ion-icon slot="start" name="add-circle-outline"></ion-icon>
@@ -123,10 +99,7 @@
             <div *ngSwitchCase="'dashboard'" class="dashboard-grid">
               <div class="stack">
                 <section class="metric-grid">
-                  <article
-                    class="metric-card"
-                    *ngFor="let metric of activeRole.metrics; trackBy: trackByMetric"
-                  >
+                  <article class="metric-card" *ngFor="let metric of activeRole.metrics; trackBy: trackByMetric">
                     <header>
                       <h3>{{ metric.label }}</h3>
                       <div class="metric-icon">
@@ -155,9 +128,7 @@
                       </ion-button>
                     </div>
                   </div>
-                  <ng-container
-                    *ngTemplateOutlet="patientList; context: { patients: activeRole.patients.slice(0, 4) }"
-                  ></ng-container>
+                  <ng-container *ngTemplateOutlet="patientList; context: { patients: activeRole.patients.slice(0, 4) }"></ng-container>
                 </section>
 
                 <section class="panel">
@@ -208,9 +179,7 @@
                       </ion-button>
                     </div>
                   </div>
-                  <ng-container
-                    *ngTemplateOutlet="resourceGrid; context: { resources: activeRole.resources.slice(0, 4) }"
-                  ></ng-container>
+                  <ng-container *ngTemplateOutlet="resourceGrid; context: { resources: activeRole.resources.slice(0, 4) }"></ng-container>
                 </section>
               </aside>
             </div>
@@ -233,10 +202,7 @@
                 </div>
               </div>
               <div class="schedule-list" *ngIf="filteredSchedule.length; else emptySchedule">
-                <article
-                  class="schedule-card"
-                  *ngFor="let item of filteredSchedule; trackBy: trackBySchedule"
-                >
+                <article class="schedule-card" *ngFor="let item of filteredSchedule; trackBy: trackBySchedule">
                   <div>
                     <span class="time-chip">{{ item.time }}</span>
                   </div>
@@ -287,7 +253,7 @@
           </ng-container>
         </main>
       </ion-content>
-    </ion-page>
+    </div>
   </ion-split-pane>
 
   <ion-modal [isOpen]="modalOpen" (didDismiss)="closeModal()">
@@ -386,14 +352,6 @@
               <ion-label position="stacked">Owner</ion-label>
               <ion-input [value]="activeRole.label"></ion-input>
             </ion-item>
-            <ion-item>
-              <ion-label position="stacked">Visibility</ion-label>
-              <ion-select value="Role team">
-                <ion-select-option value="Role team">Role team</ion-select-option>
-                <ion-select-option value="Hospital leads">Hospital leads</ion-select-option>
-                <ion-select-option value="All departments">All departments</ion-select-option>
-              </ion-select>
-            </ion-item>
             <div class="modal-footer">
               <ion-button fill="outline">Draft</ion-button>
               <ion-button>Publish</ion-button>
@@ -450,12 +408,7 @@
             <span class="item-kicker">{{ patient.bed }}</span>
             <h3>{{ patient.name }}</h3>
           </div>
-          <ion-button
-            size="small"
-            fill="clear"
-            [attr.aria-label]="'Open ' + patient.name"
-            (click)="openPatient(patient)"
-          >
+          <ion-button size="small" fill="clear" [attr.aria-label]="'Open ' + patient.name" (click)="openPatient(patient)">
             <ion-icon slot="icon-only" name="open-outline"></ion-icon>
           </ion-button>
         </header>
@@ -474,11 +427,7 @@
       <article class="task-card" [class.done]="isTaskDone(task)" *ngFor="let task of tasks; trackBy: trackByTask">
         <div class="task-check">
           <div class="priority-rail" [ngClass]="severityClass(task.priority)"></div>
-          <ion-checkbox
-            [checked]="isTaskDone(task)"
-            [attr.aria-label]="'Complete ' + task.title"
-            (ionChange)="toggleTask(task)"
-          ></ion-checkbox>
+          <ion-checkbox [checked]="isTaskDone(task)" [attr.aria-label]="'Complete ' + task.title" (ionChange)="toggleTask(task)"></ion-checkbox>
           <div>
             <header>
               <h3>{{ task.title }}</h3>
@@ -499,12 +448,7 @@
       <article class="resource-card" *ngFor="let resource of resources; trackBy: trackByResource">
         <header>
           <h3>{{ resource.label }}</h3>
-          <ion-button
-            size="small"
-            fill="clear"
-            [attr.aria-label]="'Open ' + resource.label"
-            (click)="openResource(resource)"
-          >
+          <ion-button size="small" fill="clear" [attr.aria-label]="'Open ' + resource.label" (click)="openResource(resource)">
             <ion-icon slot="icon-only" name="open-outline"></ion-icon>
           </ion-button>
         </header>
