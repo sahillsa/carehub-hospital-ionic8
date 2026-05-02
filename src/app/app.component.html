@@ -1,0 +1,559 @@
+<ion-app>
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" type="overlay">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>CareHub</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <div class="brand-lockup">
+          <div class="brand-mark">
+            <ion-icon name="medkit-outline" aria-hidden="true"></ion-icon>
+          </div>
+          <div>
+            <strong>City Hospital</strong>
+            <span>Clinical operations</span>
+          </div>
+        </div>
+
+        <ion-list lines="none">
+          <ion-menu-toggle
+            *ngFor="let item of menuItems; trackBy: trackByView"
+            [autoHide]="false"
+          >
+            <ion-item
+              [button]="true"
+              [detail]="false"
+              [class.active]="viewKey === item.id"
+              (click)="setView(item.id)"
+            >
+              <ion-icon slot="start" [name]="item.icon"></ion-icon>
+              <ion-label>{{ item.label }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+
+    <ion-page id="main-content">
+      <ion-header translucent="true">
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+          </ion-buttons>
+          <ion-title>Hospital Command Center</ion-title>
+          <ion-buttons slot="end">
+            <ion-button aria-label="Notifications" (click)="openModal('notices')">
+              <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+            </ion-button>
+            <ion-button aria-label="Current user" (click)="openModal('profile')">
+              <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+
+        <ion-toolbar class="role-toolbar">
+          <ion-segment
+            [scrollable]="true"
+            [value]="roleKey"
+            (ionChange)="setRole($any($event).detail.value)"
+          >
+            <ion-segment-button
+              *ngFor="let key of roleKeys; trackBy: trackByRole"
+              [value]="key"
+            >
+              <ion-icon [name]="roles[key].icon"></ion-icon>
+              <ion-label>{{ roles[key].label }}</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content [fullscreen]="true">
+        <main class="app-shell">
+          <section class="shift-strip" aria-label="Current shift">
+            <div>
+              <span class="eyebrow">Active role</span>
+              <h1>{{ activeRole.label }}</h1>
+              <p>{{ activeRole.summary }}</p>
+            </div>
+
+            <div class="shift-meta">
+              <div>
+                <span>Shift</span>
+                <strong>{{ currentShiftLabel() }}</strong>
+              </div>
+              <div>
+                <span>Site</span>
+                <strong>City Hospital</strong>
+              </div>
+              <div>
+                <span>Status</span>
+                <strong>{{ activeRole.status }}</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="toolbar-strip" aria-label="Workspace tools">
+            <ion-searchbar
+              [debounce]="120"
+              [value]="query"
+              placeholder="Search patient, task, ward"
+              (ionInput)="setQuery($any($event).detail.value)"
+            ></ion-searchbar>
+            <div class="quick-actions">
+              <ion-button size="small" (click)="openModal('newPatient')">
+                <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+                Patient
+              </ion-button>
+              <ion-button size="small" fill="outline" (click)="openModal('handover')">
+                <ion-icon slot="start" name="clipboard-outline"></ion-icon>
+                Handover
+              </ion-button>
+              <ion-button size="small" color="warning" fill="outline" (click)="openModal('escalation')">
+                <ion-icon slot="start" name="alert-circle-outline"></ion-icon>
+                Escalate
+              </ion-button>
+            </div>
+          </section>
+
+          <ng-container [ngSwitch]="viewKey">
+            <div *ngSwitchCase="'dashboard'" class="dashboard-grid">
+              <div class="stack">
+                <section class="metric-grid">
+                  <article
+                    class="metric-card"
+                    *ngFor="let metric of activeRole.metrics; trackBy: trackByMetric"
+                  >
+                    <header>
+                      <h3>{{ metric.label }}</h3>
+                      <div class="metric-icon">
+                        <ion-icon [name]="metric.icon"></ion-icon>
+                      </div>
+                    </header>
+                    <div class="metric-value">{{ metric.value }}</div>
+                    <p>{{ metric.note }}</p>
+                    <span class="trend" [ngClass]="metric.trend">
+                      <ion-icon [name]="trendIcon(metric.trend)"></ion-icon>
+                      {{ trendLabel(metric.trend) }}
+                    </span>
+                  </article>
+                </section>
+
+                <section class="panel">
+                  <div class="panel-header">
+                    <div>
+                      <span class="panel-kicker">Live workload</span>
+                      <h2>Patient Queue</h2>
+                    </div>
+                    <div class="panel-actions">
+                      <ion-button size="small" fill="outline" (click)="setView('patients')">
+                        <ion-icon slot="start" name="people-outline"></ion-icon>
+                        Patients
+                      </ion-button>
+                    </div>
+                  </div>
+                  <ng-container
+                    *ngTemplateOutlet="patientList; context: { patients: activeRole.patients.slice(0, 4) }"
+                  ></ng-container>
+                </section>
+
+                <section class="panel">
+                  <div class="panel-header">
+                    <div>
+                      <span class="panel-kicker">Today</span>
+                      <h2>Role Tasks</h2>
+                    </div>
+                    <div class="panel-actions">
+                      <ion-button size="small" fill="outline" (click)="setView('schedule')">
+                        <ion-icon slot="start" name="calendar-outline"></ion-icon>
+                        Schedule
+                      </ion-button>
+                    </div>
+                  </div>
+                  <ng-container *ngTemplateOutlet="taskList; context: { tasks: activeRole.tasks }"></ng-container>
+                </section>
+              </div>
+
+              <aside class="stack">
+                <section class="panel">
+                  <div class="panel-header">
+                    <div>
+                      <span class="panel-kicker">Notes</span>
+                      <h2>Shift Handover</h2>
+                    </div>
+                  </div>
+                  <div class="handover-list">
+                    <article class="task-card" *ngFor="let note of activeRole.handover">
+                      <p>{{ note }}</p>
+                      <div class="handover-meta">
+                        <span class="pill info">Shift note</span>
+                      </div>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="panel">
+                  <div class="panel-header">
+                    <div>
+                      <span class="panel-kicker">Capacity</span>
+                      <h2>Operations Snapshot</h2>
+                    </div>
+                    <div class="panel-actions">
+                      <ion-button size="small" fill="outline" (click)="setView('operations')">
+                        <ion-icon slot="start" name="business-outline"></ion-icon>
+                        Open
+                      </ion-button>
+                    </div>
+                  </div>
+                  <ng-container
+                    *ngTemplateOutlet="resourceGrid; context: { resources: activeRole.resources.slice(0, 4) }"
+                  ></ng-container>
+                </section>
+              </aside>
+            </div>
+
+            <section *ngSwitchCase="'patients'" class="panel">
+              <div class="panel-header">
+                <div>
+                  <span class="panel-kicker">Queue</span>
+                  <h2>Patients</h2>
+                </div>
+              </div>
+              <ng-container *ngTemplateOutlet="patientList; context: { patients: filteredPatients }"></ng-container>
+            </section>
+
+            <section *ngSwitchCase="'schedule'" class="panel">
+              <div class="panel-header">
+                <div>
+                  <span class="panel-kicker">Shift timeline</span>
+                  <h2>Schedule</h2>
+                </div>
+              </div>
+              <div class="schedule-list" *ngIf="filteredSchedule.length; else emptySchedule">
+                <article
+                  class="schedule-card"
+                  *ngFor="let item of filteredSchedule; trackBy: trackBySchedule"
+                >
+                  <div>
+                    <span class="time-chip">{{ item.time }}</span>
+                  </div>
+                  <div>
+                    <header>
+                      <h3>{{ item.title }}</h3>
+                    </header>
+                    <p>{{ item.note }}</p>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <section *ngSwitchCase="'operations'" class="panel">
+              <div class="panel-header">
+                <div>
+                  <span class="panel-kicker">Resources and tickets</span>
+                  <h2>Operations</h2>
+                </div>
+              </div>
+              <ng-container *ngTemplateOutlet="resourceGrid; context: { resources: filteredResources }"></ng-container>
+            </section>
+
+            <section *ngSwitchCase="'access'" class="panel">
+              <div class="panel-header">
+                <div>
+                  <span class="panel-kicker">Role permissions</span>
+                  <h2>Access</h2>
+                </div>
+              </div>
+              <div class="permission-list">
+                <article class="permission-row" *ngFor="let row of permissions">
+                  <div>
+                    <span class="panel-kicker">Module</span>
+                    <div class="access-title">{{ row.area }}</div>
+                  </div>
+                  <div>
+                    <p>{{ row[roleKey] }}</p>
+                    <div class="access-cells">
+                      <span class="pill" *ngFor="let key of secondaryRoleKeys">
+                        {{ roles[key].label }}: {{ row[key] }}
+                      </span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </section>
+          </ng-container>
+        </main>
+      </ion-content>
+    </ion-page>
+  </ion-split-pane>
+
+  <ion-modal [isOpen]="modalOpen" (didDismiss)="closeModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ modalTitle }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button aria-label="Close" (click)="closeModal()">
+              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <div class="modal-body" [ngSwitch]="modalMode">
+          <div class="modal-form" *ngSwitchCase="'patient'">
+            <ng-container *ngIf="selectedPatient as patient">
+              <ion-item>
+                <ion-label>
+                  <h2>{{ patient.bed }}</h2>
+                  <p>{{ patient.note }}</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>Owner</ion-label>
+                <ion-note slot="end">{{ patient.owner }}</ion-note>
+              </ion-item>
+              <ion-item>
+                <ion-label>Next action</ion-label>
+                <ion-note slot="end">{{ patient.eta }}</ion-note>
+              </ion-item>
+              <div class="modal-footer">
+                <ion-button fill="outline">Message owner</ion-button>
+                <ion-button>Add note</ion-button>
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="modal-form" *ngSwitchCase="'resource'">
+            <ng-container *ngIf="selectedResource as resource">
+              <ion-item>
+                <ion-label>
+                  <h2>{{ resource.value }}</h2>
+                  <p>{{ resource.percent }}% current utilization</p>
+                </ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>Status</ion-label>
+                <ion-note slot="end">{{ resource.level }}</ion-note>
+              </ion-item>
+              <div class="bar-track">
+                <div class="bar-fill" [ngClass]="resource.level" [style.width.%]="resource.percent"></div>
+              </div>
+              <div class="modal-footer">
+                <ion-button fill="outline">Assign owner</ion-button>
+                <ion-button>Create ticket</ion-button>
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="modal-form" *ngSwitchCase="'newPatient'">
+            <ion-item>
+              <ion-label position="stacked">Patient name</ion-label>
+              <ion-input placeholder="Full name"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Location</ion-label>
+              <ion-input placeholder="Ward, bed, department"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Priority</ion-label>
+              <ion-select value="Moderate">
+                <ion-select-option value="Critical">Critical</ion-select-option>
+                <ion-select-option value="High">High</ion-select-option>
+                <ion-select-option value="Moderate">Moderate</ion-select-option>
+                <ion-select-option value="Stable">Stable</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Note</ion-label>
+              <ion-textarea placeholder="Reason for attention"></ion-textarea>
+            </ion-item>
+            <div class="modal-footer">
+              <ion-button fill="outline">Save draft</ion-button>
+              <ion-button>Add to queue</ion-button>
+            </div>
+          </div>
+
+          <div class="modal-form" *ngSwitchCase="'handover'">
+            <ion-item>
+              <ion-label position="stacked">Handover note</ion-label>
+              <ion-textarea placeholder="Clinical, operational, or facility update"></ion-textarea>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Owner</ion-label>
+              <ion-input [value]="activeRole.label"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Visibility</ion-label>
+              <ion-select value="Role team">
+                <ion-select-option value="Role team">Role team</ion-select-option>
+                <ion-select-option value="Hospital leads">Hospital leads</ion-select-option>
+                <ion-select-option value="All departments">All departments</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <div class="modal-footer">
+              <ion-button fill="outline">Draft</ion-button>
+              <ion-button>Publish</ion-button>
+            </div>
+          </div>
+
+          <div class="modal-form" *ngSwitchCase="'escalation'">
+            <ion-item>
+              <ion-label position="stacked">Escalation type</ion-label>
+              <ion-select value="Clinical">
+                <ion-select-option value="Clinical">Clinical</ion-select-option>
+                <ion-select-option value="Capacity">Capacity</ion-select-option>
+                <ion-select-option value="Facility">Facility</ion-select-option>
+                <ion-select-option value="Security">Security</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Location</ion-label>
+              <ion-input placeholder="Ward, room, department"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">Details</ion-label>
+              <ion-textarea placeholder="What needs immediate attention?"></ion-textarea>
+            </ion-item>
+            <div class="modal-footer">
+              <ion-button fill="outline">Notify lead</ion-button>
+              <ion-button color="warning">Escalate now</ion-button>
+            </div>
+          </div>
+
+          <div *ngSwitchCase="'notices'">
+            <p class="notice-line" *ngFor="let note of activeRole.handover">{{ note }}</p>
+          </div>
+
+          <div class="profile-card" *ngSwitchCase="'profile'">
+            <div class="brand-mark">
+              <ion-icon [name]="activeRole.icon"></ion-icon>
+            </div>
+            <div>
+              <h3>{{ activeRole.label }}</h3>
+              <p>Signed in to City Hospital day shift.</p>
+            </div>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ng-template #patientList let-patients="patients">
+    <div class="queue-list" *ngIf="patients.length; else emptyPatients">
+      <article class="patient-card" *ngFor="let patient of patients; trackBy: trackByPatient">
+        <header>
+          <div>
+            <span class="item-kicker">{{ patient.bed }}</span>
+            <h3>{{ patient.name }}</h3>
+          </div>
+          <ion-button
+            size="small"
+            fill="clear"
+            [attr.aria-label]="'Open ' + patient.name"
+            (click)="openPatient(patient)"
+          >
+            <ion-icon slot="icon-only" name="open-outline"></ion-icon>
+          </ion-button>
+        </header>
+        <p>{{ patient.note }}</p>
+        <div class="patient-meta">
+          <span class="pill" [ngClass]="severityClass(patient.severity)">{{ patient.severity }}</span>
+          <span class="pill info">{{ patient.owner }}</span>
+          <span class="pill">{{ patient.eta }}</span>
+        </div>
+      </article>
+    </div>
+  </ng-template>
+
+  <ng-template #taskList let-tasks="tasks">
+    <div class="task-list" *ngIf="tasks.length; else emptyTasks">
+      <article class="task-card" [class.done]="isTaskDone(task)" *ngFor="let task of tasks; trackBy: trackByTask">
+        <div class="task-check">
+          <div class="priority-rail" [ngClass]="severityClass(task.priority)"></div>
+          <ion-checkbox
+            [checked]="isTaskDone(task)"
+            [attr.aria-label]="'Complete ' + task.title"
+            (ionChange)="toggleTask(task)"
+          ></ion-checkbox>
+          <div>
+            <header>
+              <h3>{{ task.title }}</h3>
+            </header>
+            <p>{{ task.area }}</p>
+            <div class="task-meta">
+              <span class="pill" [ngClass]="severityClass(task.priority)">{{ task.priority }}</span>
+              <span class="pill">{{ task.due }}</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </ng-template>
+
+  <ng-template #resourceGrid let-resources="resources">
+    <div class="resource-grid" *ngIf="resources.length; else emptyResources">
+      <article class="resource-card" *ngFor="let resource of resources; trackBy: trackByResource">
+        <header>
+          <h3>{{ resource.label }}</h3>
+          <ion-button
+            size="small"
+            fill="clear"
+            [attr.aria-label]="'Open ' + resource.label"
+            (click)="openResource(resource)"
+          >
+            <ion-icon slot="icon-only" name="open-outline"></ion-icon>
+          </ion-button>
+        </header>
+        <strong>{{ resource.value }}</strong>
+        <div class="bar-track">
+          <div class="bar-fill" [ngClass]="resource.level" [style.width.%]="resource.percent"></div>
+        </div>
+        <div class="resource-meta">
+          <span class="pill" [ngClass]="resource.level === 'critical' ? 'critical' : resource.level === 'warning' ? 'warning' : 'good'">
+            {{ resource.percent }}%
+          </span>
+        </div>
+      </article>
+    </div>
+  </ng-template>
+
+  <ng-template #emptyPatients>
+    <div class="empty-state">
+      <div>
+        <ion-icon name="people-outline"></ion-icon>
+        <p>No matching patients</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #emptyTasks>
+    <div class="empty-state">
+      <div>
+        <ion-icon name="clipboard-outline"></ion-icon>
+        <p>No matching tasks</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #emptySchedule>
+    <div class="empty-state">
+      <div>
+        <ion-icon name="calendar-outline"></ion-icon>
+        <p>No matching schedule items</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #emptyResources>
+    <div class="empty-state">
+      <div>
+        <ion-icon name="business-outline"></ion-icon>
+        <p>No matching resources</p>
+      </div>
+    </div>
+  </ng-template>
+</ion-app>
